@@ -3,7 +3,7 @@
     <p class="title">添加好友</p>
     <div class="form-input">
       <div class="input">
-        <input type="text" placeholder="手机号" v-model="phone">
+        <input type="text" placeholder="手机号" v-model="phone" maxlength="11">
       </div>
       <div class="input">
         <input type="text" placeholder="姓名" v-model="name">
@@ -47,7 +47,7 @@ export default {
         this.msg = "";
         this.$emit("submit", phone, name);
       }
-    } 
+    }
   }
 };
 </script>

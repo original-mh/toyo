@@ -40,7 +40,14 @@
     </div>
     <div class="his-use-list">
       <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-        <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+        <van-list
+          v-model="loading"
+          :finished="finished"
+          finished-text="没有更多了"
+          @load="onLoad"
+          :error.sync="errorFlag"
+          :error-text="errorText"
+        >
           <div class="his-use-list-item" v-for="item in hisArr" :key="item.id">
             <p class="jieche">
               <i class="my-icon icon-jieche"></i>
@@ -122,7 +129,10 @@ export default {
       hisArr: [],
       currentItem: null,
       formatter: this.$dateFormatter,
-      carStatus: {}
+      carStatus: {},
+
+      errorFlag: false,
+      errorText: "请求失败，点击重新加载"
     };
   },
   mounted() {
@@ -175,6 +185,12 @@ export default {
         })
         .then(data => {
           this.arr = data.JSONResult.CarInfoList;
+
+          if (this.arr.length == 0) {
+            this.loading = false;
+            this.finished = true;
+            return;
+          }
           let swipe = this.$refs.$swipe;
           swipe.swipeTo(0);
           this.onChange(0);
@@ -191,6 +207,11 @@ export default {
         borrowCarState: this.carStatus.id == 0 ? "" : this.carStatus.id,
         currPage: this.par.pageIndex
       };
+      if (!par.carId || this.arr.length == 0) {
+        this.loading = false;
+        this.finished = true;
+        return;
+      }
       if (this.currentDate != "") {
         par.likeDate = this.$$formatDate(this.currentDate, "yyyy-MM");
       } else {
@@ -241,8 +262,12 @@ export default {
 </script>
 
 <style lang="less">
+.van-nav-bar--fixed {
+  z-index: 4 !important;
+}
 .his-use {
   &-list {
+    padding-top: 480px;
     &-item {
       height: 98px;
       border-bottom: 1px solid #cbcdd0;
@@ -306,9 +331,12 @@ export default {
   }
   .filter {
     height: 88px;
-    top: 1.17333rem;
+    top: 5.3rem;
+    position: fixed;
     left: 0px;
     width: 100%;
+    z-index: 2;
+    background-color: #fafbfc;
     border-top: 1px solid;
     border-bottom: 1px solid;
     border-color: #d9dde4;
@@ -344,8 +372,15 @@ export default {
   }
   //   }
 }
+// .fil {
+//   height: 335px;
+// }
 .had {
   min-height: 335px;
+
+  position: fixed;
+  z-index: 2;
+  width: 100%;
 }
 .itme-con {
   width: ceil(317.5px + 380px) !important;
@@ -377,5 +412,8 @@ export default {
       // line-height: 35px;
     }
   }
+}
+.van-list {
+  min-height: 400px;
 }
 </style>

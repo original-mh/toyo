@@ -58,6 +58,7 @@ export default {
   },
   beforeDestroy() {
     window.$vm.$off(this.$route.meta.overlay, this.closeFull);
+    window.$vm.$off("reFriend", this.onRefresh);
   },
   mounted() {
     this.initView();
@@ -125,6 +126,8 @@ export default {
     addChecked() {
       //监控全局事件
       window.$vm.$on(this.$route.meta.overlay, this.closeFull);
+      //监控全局事件
+      window.$vm.$on("reFriend", this.onRefresh);
     },
     closeFull() {
       //关闭
@@ -173,7 +176,9 @@ export default {
     },
     onRefresh() {
       this.par.pageIndex = 1;
+      // setTimeout(() => {
       this.getFriendList();
+      // }, 5000);
     },
     onLoad() {
       this.par.pageIndex++;

@@ -124,6 +124,13 @@ export default {
     this.currUseItem = this.columns1[0];
     this.currUseName = this.columns2[0];
     this.initView();
+    setTimeout(() => {
+      window.$vm.$on("reUse", this.onRefresh);
+      this.$native.registerhandler("ios_use_onRefresh", this.onRefresh);
+    }, 1);
+  },
+  beforeDestroy() {
+    window.$vm.$off("reUse", this.onRefresh);
   },
   methods: {
     initView() {

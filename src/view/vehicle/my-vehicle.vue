@@ -44,9 +44,16 @@ export default {
   mounted() {
     this.initView();
   },
+  beforeDestroy() {
+    window.$vm.$off("reCar", this.onRefresh);
+  },
   methods: {
     initView() {
       this.user = this.$cache.getUser();
+      setTimeout(() => {
+        window.$vm.$on("reCar", this.onRefresh);
+        this.$native.registerhandler("ios_use_onRefresh", this.onRefresh);
+      }, 1);
     },
     getCarListByUserId() {
       const user = this.user,
